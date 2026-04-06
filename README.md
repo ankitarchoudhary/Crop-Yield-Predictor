@@ -226,9 +226,8 @@ cd Crop-Yield-Predictor
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Add your free Groq API key
+# 3. Add your free Groq API key in Streamlit Cloud Secrets
 # Get free key at: console.groq.com
-echo 'GROQ_API_KEY=your_groq_key_here' > .env
 
 # 4. Run the app
 streamlit run app.py
