@@ -157,9 +157,24 @@ hr { border-color: #4a7020 !important; }
     color: #e8f5b0 !important;
 }
 .streamlit-expanderHeader {
-    background: #243d0d !important;
-    color: #c8e88a !important;
+    background: #2d4f10 !important;
+    color: #e8f5b0 !important;
     border-radius: 8px !important;
+    font-size: 15px !important;
+}
+[data-testid="stExpander"] {
+    background: #1e3a0a !important;
+    border: 1px solid #4a7020 !important;
+    border-radius: 8px !important;
+}
+[data-testid="stExpander"] p,
+[data-testid="stExpander"] div,
+[data-testid="stExpander"] span,
+[data-testid="stExpander"] label {
+    color: #e8f5b0 !important;
+}
+details summary p {
+    color: #e8f5b0 !important;
 }
 .stCaption { color: #8aaa5a !important; }
 .stMarkdown p { color: #e8f5b0 !important; }
