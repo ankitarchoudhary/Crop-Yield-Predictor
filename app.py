@@ -698,7 +698,7 @@ with tab4:
         for i, faq in enumerate(filtered):
             with st.expander(f"Q{i+1}. {faq['q']}"):
                 st.markdown(
-                    f"<div style='color:#c8e88a;line-height:1.7;'>"
+                    f"<div style='color:#e8f5b0;line-height:1.7;font-size:15px;'>"
                     f"{faq['a']}</div>",
                     unsafe_allow_html=True
                 )
