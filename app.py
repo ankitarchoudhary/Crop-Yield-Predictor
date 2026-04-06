@@ -212,19 +212,12 @@ with st.sidebar:
     st.session_state.language = selected_lang
     st.divider()
 
-    # Groq API Key
-    st.markdown("### 🔑 KrishiBot API Key")
-    groq_key = st.text_input(
-    "Groq API Key", type="password",
-    placeholder="gsk_...",
-    help="Free at console.groq.com",
-    label_visibility="collapsed",
-    value=os.getenv("GROQ_API_KEY", ""),
-)
+   # Groq API Key — loaded from secrets
+    groq_key = os.getenv("GROQ_API_KEY", "")
     if groq_key:
         st.success("✅ KrishiBot Ready!")
     else:
-        st.warning("⚠️ Add key for KrishiBot")
+        st.warning("⚠️ KrishiBot unavailable")
     st.divider()
 
     # About
