@@ -4,8 +4,15 @@
 
 import pandas as pd
 import numpy as np
-import requests
 import streamlit as st
+
+# Location data from LGD (Govt of India)
+from location_db import (
+    get_all_states,
+    get_districts,
+    get_tehsils,
+    get_villages,
+)
 
 # ─────────────────────────────────────────
 # CROPS — Category wise (150+ Indian crops)
@@ -119,11 +126,9 @@ SEASONS = [
 ]
 
 # ─────────────────────────────────────────
-# LAND UNITS
-# 28 States + 8 UTs = 36 total
+# LAND UNITS — 28 States + 8 UTs
 # ─────────────────────────────────────────
 LAND_UNITS = {
-    # ── STATES ──────────────────────────
     "Andhra Pradesh": {
         "units": ["Acre", "Cent", "Guntha"],
         "to_hectare": {
@@ -300,8 +305,6 @@ LAND_UNITS = {
             "Chhatak": 0.000, "Acre": 0.404
         }
     },
-
-    # ── UNION TERRITORIES ───────────────
     "Andaman and Nicobar Islands": {
         "units": ["Acre", "Hectare"],
         "to_hectare": {
@@ -353,75 +356,16 @@ LAND_UNITS = {
     },
 }
 
-# Sorted list of all states + UTs
-STATES = sorted(LAND_UNITS.keys())
+# STATES — Real LGD data use karo
+STATES = get_all_states()
 
-# ─────────────────────────────────────────
-# LGD API — Real Government Location Data
-# Source: lgdirectory.gov.in (Free, No key)
-# Fallback: "Data loading..." if API fails
-# ─────────────────────────────────────────
-LGD_BASE = "https://lgdirectory.gov.in"
-
-@st.cache_data(ttl=86400)
-def get_districts(state_name: str) -> list:
-    """LGD API se real districts fetch karta hai"""
-    try:
-        url = f"{LGD_BASE}/api/districts"
-        r = requests.get(
-            url, params={"state": state_name}, timeout=5
-        )
-        if r.status_code == 200:
-            return [d["districtName"] for d in r.json()]
-    except Exception:
-        pass
-    return ["Data loading..."]
-
-@st.cache_data(ttl=86400)
-def get_tehsils(state_name: str, district_name: str) -> list:
-    """LGD API se real tehsils fetch karta hai"""
-    try:
-        url = f"{LGD_BASE}/api/tehsils"
-        r = requests.get(url, params={
-            "state": state_name,
-            "district": district_name
-        }, timeout=5)
-        if r.status_code == 200:
-            return [t["tehsilName"] for t in r.json()]
-    except Exception:
-        pass
-    return ["Data loading..."]
-
-@st.cache_data(ttl=86400)
-def get_villages(
-    state_name: str,
-    district_name: str,
-    tehsil_name: str
-) -> list:
-    """LGD API se real villages fetch karta hai"""
-    try:
-        url = f"{LGD_BASE}/api/villages"
-        r = requests.get(url, params={
-            "state": state_name,
-            "district": district_name,
-            "tehsil": tehsil_name
-        }, timeout=5)
-        if r.status_code == 200:
-            return [v["villageName"] for v in r.json()]
-    except Exception:
-        pass
-    return [
-        f"{tehsil_name} Village 1",
-        f"{tehsil_name} Village 2",
-        f"{tehsil_name} Village 3",
-        "Other (Manual Entry)"
-    ]
 
 def get_land_units(state: str) -> list:
     """State ke liye land units return karta hai"""
     return LAND_UNITS.get(state, {}).get(
         "units", ["Acre", "Hectare"]
     )
+
 
 def convert_to_hectare(
     value: float, unit: str, state: str
@@ -431,6 +375,7 @@ def convert_to_hectare(
         "to_hectare", {}
     ).get(unit, 0.404)
     return round(value * factor, 4)
+
 
 def get_crop_info(crop: str) -> dict:
     """Crop ki ideal conditions return karta hai"""
@@ -477,6 +422,7 @@ def get_crop_info(crop: str) -> dict:
         "ideal_temp":     "15-35°C",
         "season":         "Kharif/Rabi"
     })
+
 
 def get_sample_data() -> pd.DataFrame:
     """Realistic crop yield data generate karta hai"""
